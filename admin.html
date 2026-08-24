@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sound News - Gerador de JSON Admin</title>
-
+    <title>Sound News - Painel de Gestão (Admin)</title>
     <style>
         :root {
             --bg-color: #0f111a;
@@ -12,6 +11,7 @@
             --primary-color: #ffffff;
             --secondary-color: #a0a5b5;
             --accent-color: #1db954;
+            --border-color: #25293a;
         }
 
         * {
@@ -24,34 +24,31 @@
         body {
             background-color: var(--bg-color);
             color: var(--primary-color);
-            padding: 20px 15px 60px 15px;
+            padding: 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
         }
 
-        header {
+        .header-admin {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 15px;
-            border-bottom: 1px solid #25293a;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .btn-voltar {
-            background-color: #232736;
+            background: #232736;
             color: var(--secondary-color);
-            border: 1px solid #32374d;
+            border: 1px solid var(--border-color);
             padding: 8px 16px;
             border-radius: 20px;
             text-decoration: none;
@@ -64,365 +61,315 @@
             border-color: var(--accent-color);
         }
 
-        .card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
+        /* Zona Drag & Drop */
+        .drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            background-color: #0f111a;
+            color: var(--secondary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
             margin-bottom: 20px;
-            border: 1px solid #25293a;
         }
 
-        .card-title {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--accent-color);
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--accent-color);
+            background-color: #161a26;
+            color: #fff;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .drop-zone-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
         }
 
-        @media (max-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+        .drop-zone-text {
+            font-size: 0.9rem;
+        }
+
+        .file-info-badge {
+            margin-top: 8px;
+            display: inline-block;
+            background: var(--accent-color);
+            color: #000;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
         }
 
         .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            margin-bottom: 15px;
         }
 
         label {
-            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 5px;
             color: var(--secondary-color);
+            font-size: 0.9rem;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 10px 12px;
-            border-radius: 6px;
-            border: 1px solid #32374d;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
             background-color: #0f111a;
             color: #fff;
             outline: none;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         input:focus {
             border-color: var(--accent-color);
         }
 
-        .botoes-acoes {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 20px;
+        .btn-gerar {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
             border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            font-size: 0.9rem;
-        }
-
-        .btn-adicionar {
             background-color: var(--accent-color);
             color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
         }
 
-        .btn-limpar {
-            background-color: #32374d;
-            color: #fff;
+        .btn-gerar:hover {
+            opacity: 0.9;
         }
 
-        .btn:hover {
-            transform: scale(1.02);
+        .resultado-area {
+            margin-top: 25px;
+            display: none;
         }
 
-        /* Área do JSON */
         textarea {
             width: 100%;
-            height: 280px;
-            background-color: #090a10;
-            color: #1db954;
-            border: 1px solid #32374d;
+            height: 180px;
+            background-color: #0f111a;
+            color: var(--accent-color);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 12px;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: monospace;
             font-size: 0.85rem;
-            resize: vertical;
+            resize: none;
             outline: none;
-        }
-
-        .area-copiar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
         }
 
         .btn-copiar {
             background-color: #232736;
             color: #fff;
-            border: 1px solid var(--accent-color);
-            padding: 6px 14px;
-            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: 0.2s;
+            margin-top: 8px;
+            font-weight: bold;
         }
 
         .btn-copiar:hover {
-            background-color: var(--accent-color);
-            color: #000;
+            border-color: var(--accent-color);
         }
 
-        /* Lista de Músicas Temporárias */
-        .item-lista {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #0f111a;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border: 1px solid #25293a;
+        .passos-instrucao {
+            margin-top: 20px;
+            background: #202433;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            line-height: 1.5;
         }
 
-        .btn-remover {
-            background: none;
-            border: none;
-            color: #ff4757;
-            cursor: pointer;
-            font-size: 1rem;
+        .passos-instrucao ol {
+            margin-left: 20px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <header>
-            <h1>⚙️ Gerador de JSON (Admin)</h1>
-            <a href="index.html" class="btn-voltar">← Voltar ao App</a>
-        </header>
-
-        <!-- Formulário de Cadastro -->
-        <div class="card">
-            <h2 class="card-title">➕ Adicionar Nova Música</h2>
-            
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="id">ID da Música *</label>
-                    <input type="number" id="id" placeholder="Ex: 1, 2, 3...">
-                </div>
-
-                <div class="form-group">
-                    <label for="titulo">Título da Música *</label>
-                    <input type="text" id="titulo" placeholder="Ex: Mamas Baby">
-                </div>
-
-                <div class="form-group">
-                    <label for="artista">Artista / Cantor *</label>
-                    <input type="text" id="artista" placeholder="Ex: Nelson Tivane">
-                </div>
-
-                <div class="form-group">
-                    <label for="genero">Gênero Musical</label>
-                    <input type="text" id="genero" placeholder="Ex: Amapiano, Kizomba">
-                </div>
-
-                <div class="form-group">
-                    <label for="capa">Imagem da Capa</label>
-                    <input type="text" id="capa" placeholder="Ex: capa.jpg">
-                </div>
-
-                <div class="form-group">
-                    <label for="audio">Arquivo de Áudio (.mp3) *</label>
-                    <input type="text" id="audio" placeholder="Ex: musica.mp3">
-                </div>
-
-                <div class="form-group">
-                    <label for="downloadNome">Nome do Ficheiro para Download</label>
-                    <input type="text" id="downloadNome" placeholder="Ex: Nelson Tivane - Mamas baby.mp3">
-                </div>
-
-                <div class="form-group">
-                    <label for="downloadsIniciais">Downloads Iniciais</label>
-                    <input type="number" id="downloadsIniciais" value="0">
-                </div>
-
-                <div class="form-group">
-                    <label for="likesIniciais">Likes Iniciais</label>
-                    <input type="number" id="likesIniciais" value="0">
-                </div>
-            </div>
-
-            <div class="botoes-acoes">
-                <button class="btn btn-adicionar" onclick="adicionarMusica()">➕ Adicionar à Lista</button>
-                <button class="btn btn-limpar" onclick="limparTudo()">🗑️ Limpar Tudo</button>
-            </div>
+        <div class="header-admin">
+            <h2>⚙️ Painel de Gestão (Admin)</h2>
+            <a href="index.html" class="btn-voltar">⬅️ Voltar ao Site</a>
         </div>
 
-        <!-- Músicas na Fila -->
-        <div class="card">
-            <h2 class="card-title">🎵 Músicas Adicionadas (<span id="total-count">0</span>)</h2>
-            <div id="lista-preview"></div>
-        </div>
+        <h3>Adicionar Nova Música</h3>
+        <p style="color: var(--secondary-color); font-size: 0.85rem; margin-bottom: 20px;">
+            Arrasta o ficheiro MP3 para a área abaixo ou preenche os campos para gerar o código pronto a adicionar ao teu <b>musicas.json</b>.
+        </p>
 
-        <!-- Código JSON Gerado -->
-        <div class="card">
-            <div class="area-copiar">
-                <h2 class="card-title" style="margin-bottom: 0;">📄 Código JSON Gerado</h2>
-                <button class="btn-copiar" onclick="copiarJSON()">📋 Copiar Código JSON</button>
+        <form id="form-musica">
+            <!-- Zona Drag & Drop -->
+            <div class="drop-zone" id="drop-zone">
+                <div class="drop-zone-icon">📁</div>
+                <div class="drop-zone-text">Arrasta e solta o ficheiro <b>.mp3</b> aqui ou clica para selecionar</div>
+                <input type="file" id="file-input" accept="audio/mp3, audio/*" style="display: none;">
+                <div id="file-info"></div>
             </div>
-            <p style="color: var(--secondary-color); font-size: 0.8rem; margin-bottom: 10px;">
-                Copie o conteúdo abaixo e cole dentro do seu arquivo <strong>musicas.json</strong>.
-            </p>
+
+            <div class="form-group">
+                <label>ID da Música (Número seguinte ao último do json):</label>
+                <input type="number" id="idMusica" placeholder="Ex: 10" required>
+            </div>
+
+            <div class="form-group">
+                <label>Título da Música:</label>
+                <input type="text" id="titulo" placeholder="Ex: Amor de Mãe" required>
+            </div>
+
+            <div class="form-group">
+                <label>Nome do Artista:</label>
+                <input type="text" id="artista" placeholder="Ex: Zé Ngola" required>
+            </div>
+
+            <div class="form-group">
+                <label>Género Musical:</label>
+                <select id="genero">
+                    <option value="Marrabenta">Marrabenta</option>
+                    <option value="Pandza">Pandza</option>
+                    <option value="HipHop">HipHop</option>
+                    <option value="Kizomba">Kizomba</option>
+                    <option value="Afro House">Afro House</option>
+                    <option value="Gospel">Gospel</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nome EXATO do Ficheiro MP3 (Preenchido automaticamente):</label>
+                <input type="text" id="audio" placeholder="Ex: Ze Ngola - Amor de Mae.mp3" required>
+            </div>
+
+            <div class="form-group">
+                <label>Ficheiro de Capa (Opcional):</label>
+                <input type="text" id="capa" value="capa.jpg">
+            </div>
+
+            <button type="button" class="btn-gerar" onclick="gerarJSON()">✨ Gerar Código JSON</button>
+        </form>
+
+        <div class="resultado-area" id="resultado-area">
+            <h4 style="margin-bottom: 8px;">Código Gerado:</h4>
             <textarea id="json-output" readonly></textarea>
+            <button class="btn-copiar" onclick="copiarCodigo()">📋 Copiar Código</button>
+
+            <div class="passos-instrucao">
+                <strong>📌 Como publicar no site:</strong>
+                <ol>
+                    <li>Certifica-te de que já fizeste o upload do ficheiro <code>.mp3</code> no GitHub.</li>
+                    <li>Clica no botão <strong>Copiar Código</strong> acima.</li>
+                    <li>Abre o teu ficheiro <strong>musicas.json</strong> no GitHub e clica no ícone do lápis ✏️.</li>
+                    <li>Cola este código no final da lista (antes do último parêntesis reto <code>]</code>).</li>
+                    <li>Não te esqueças de colocar uma vírgula <code>,</code> após a música anterior!</li>
+                </ol>
+            </div>
         </div>
     </div>
 
     <script>
-        let listaMusicas = [];
-        let proximoId = 1;
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const inputAudio = document.getElementById('audio');
+        const inputArtista = document.getElementById('artista');
+        const inputTitulo = document.getElementById('titulo');
 
-        // Auto-preenche o ID inicial
-        document.getElementById('id').value = proximoId;
+        // Abrir seletor de ficheiros ao clicar na zona
+        dropZone.addEventListener('click', () => fileInput.click());
 
-        // Auto-preenche o campo 'downloadNome' conforme o usuário digita
-        document.getElementById('artista').addEventListener('input', preencherDownloadNome);
-        document.getElementById('titulo').addEventListener('input', preencherDownloadNome);
-
-        function preencherDownloadNome() {
-            const artista = document.getElementById('artista').value.trim();
-            const titulo = document.getElementById('titulo').value.trim();
-            const campoDownload = document.getElementById('downloadNome');
-            
-            // Só altera automaticamente se o usuário não tiver escrito algo manualmente diferente
-            if (artista && titulo) {
-                campoDownload.value = `${artista} - ${titulo}.mp3`;
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processarFicheiro(e.target.files[0]);
             }
-        }
+        });
 
-        function adicionarMusica() {
-            const idInput = document.getElementById('id').value;
-            const titulo = document.getElementById('titulo').value.trim();
-            const artista = document.getElementById('artista').value.trim();
-            const genero = document.getElementById('genero').value.trim();
-            let capa = document.getElementById('capa').value.trim();
-            const audio = document.getElementById('audio').value.trim();
-            let downloadNome = document.getElementById('downloadNome').value.trim();
-            const downloadsIniciais = parseInt(document.getElementById('downloadsIniciais').value) || 0;
-            const likesIniciais = parseInt(document.getElementById('likesIniciais').value) || 0;
+        // Eventos Drag and Drop
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            }, false);
+        });
 
-            if (!idInput || !titulo || !artista || !audio) {
-                alert("Por favor, preencha os campos obrigatórios: ID, Título, Artista e Arquivo de Áudio!");
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processarFicheiro(files[0]);
+            }
+        });
+
+        function processarFicheiro(file) {
+            if (!file.name.endsWith('.mp3') && !file.type.includes('audio')) {
+                alert("Por favor, selecione apenas ficheiros de áudio (.mp3)!");
                 return;
             }
 
-            if (!capa) capa = 'capa.jpg';
-            if (!downloadNome) downloadNome = `${artista} - ${titulo}.mp3`;
+            // Preenche o nome exato do ficheiro de áudio
+            inputAudio.value = file.name;
+            fileInfo.innerHTML = `<span class="file-info-badge">✔ ${file.name}</span>`;
+
+            // Tenta preencher automaticamente Artista e Título se o nome for "Artista - Titulo.mp3"
+            const nomeSemExtensao = file.name.replace(/\.[^/.]+$/, "");
+            if (nomeSemExtensao.includes(' - ')) {
+                const partes = nomeSemExtensao.split(' - ');
+                if (!inputArtista.value) inputArtista.value = partes[0].trim();
+                if (!inputTitulo.value) inputTitulo.value = partes[1].trim();
+            } else if (!inputTitulo.value) {
+                inputTitulo.value = nomeSemExtensao.trim();
+            }
+        }
+
+        function gerarJSON() {
+            const id = parseInt(document.getElementById('idMusica').value);
+            const titulo = document.getElementById('titulo').value.trim();
+            const artista = document.getElementById('artista').value.trim();
+            const genero = document.getElementById('genero').value;
+            const audio = document.getElementById('audio').value.trim();
+            const capa = document.getElementById('capa').value.trim() || 'capa.jpg';
+
+            if (!id || !titulo || !artista || !audio) {
+                alert("Por favor, preencha todos os campos obrigatórios!");
+                return;
+            }
 
             const novaMusica = {
-                id: parseInt(idInput),
-                titulo: titulo,
-                artista: artista,
-                genero: genero || 'Single',
-                capa: capa,
-                audio: audio,
-                downloadNome: downloadNome,
-                downloadsIniciais: downloadsIniciais,
-                likesIniciais: likesIniciais
+                "id": id,
+                "titulo": titulo,
+                "artista": artista,
+                "genero": genero,
+                "capa": capa,
+                "audio": audio,
+                "downloadNome": `${artista} - ${titulo}.mp3`,
+                "downloadsIniciais": 0,
+                "likesIniciais": 0
             };
 
-            listaMusicas.push(novaMusica);
-            
-            // Incrementa sugestão do próximo ID
-            proximoId = parseInt(idInput) + 1;
-
-            atualizarTela();
-            limparFormulario();
+            const jsonFormatado = JSON.stringify(novaMusica, null, 2);
+            document.getElementById('json-output').value = ",\n" + jsonFormatado;
+            document.getElementById('resultado-area').style.display = 'block';
         }
 
-        function removerMusica(index) {
-            listaMusicas.splice(index, 1);
-            atualizarTela();
+        function copiarCodigo() {
+            const textarea = document.getElementById('json-output');
+            textarea.select();
+            document.execCommand('copy');
+            alert("Código copiado com sucesso! Agora cola no musicas.json no GitHub.");
         }
-
-        function limparTudo() {
-            if (confirm("Deseja realmente limpar toda a lista?")) {
-                listaMusicas = [];
-                proximoId = 1;
-                atualizarTela();
-                document.getElementById('id').value = proximoId;
-            }
-        }
-
-        function limparFormulario() {
-            document.getElementById('id').value = proximoId;
-            document.getElementById('titulo').value = '';
-            document.getElementById('artista').value = '';
-            document.getElementById('genero').value = '';
-            document.getElementById('capa').value = '';
-            document.getElementById('audio').value = '';
-            document.getElementById('downloadNome').value = '';
-            document.getElementById('downloadsIniciais').value = '0';
-            document.getElementById('likesIniciais').value = '0';
-        }
-
-        function atualizarTela() {
-            document.getElementById('total-count').innerText = listaMusicas.length;
-
-            const preview = document.getElementById('lista-preview');
-            preview.innerHTML = '';
-
-            if (listaMusicas.length === 0) {
-                preview.innerHTML = '<p style="color: var(--secondary-color); font-size: 0.85rem;">Nenhuma música adicionada ainda.</p>';
-            } else {
-                listaMusicas.forEach((m, i) => {
-                    const item = document.createElement('div');
-                    item.className = 'item-lista';
-                    item.innerHTML = `
-                        <div>
-                            <strong>#${m.id} - ${m.titulo}</strong> (${m.artista}) 
-                            <span style="color: var(--accent-color); font-size: 0.8rem;">[${m.genero}]</span>
-                        </div>
-                        <button class="btn-remover" onclick="removerMusica(${i})" title="Remover">❌</button>
-                    `;
-                    preview.appendChild(item);
-                });
-            }
-
-            // Exibe o JSON perfeitamente formatado
-            document.getElementById('json-output').value = JSON.stringify(listaMusicas, null, 4);
-        }
-
-        function copiarJSON() {
-            const jsonTextarea = document.getElementById('json-output');
-
-            if (!jsonTextarea.value || jsonTextarea.value === "[]") {
-                alert("Não há código JSON para copiar. Adicione pelo menos uma música.");
-                return;
-            }
-
-            jsonTextarea.select();
-            jsonTextarea.setSelectionRange(0, 99999);
-
-            navigator.clipboard.writeText(jsonTextarea.value).then(() => {
-                alert("Código JSON copiado com sucesso! Cole no arquivo musicas.json");
-            }).catch(err => {
-                alert("Erro ao copiar automaticamente. Selecione o texto e copie com Ctrl+C.");
-            });
-        }
-
-        atualizarTela();
     </script>
 </body>
 </html>
