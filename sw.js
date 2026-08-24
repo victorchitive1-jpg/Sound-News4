@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sound-news-v3'; // Altera para v3, v4... sempre que fizeres atualizações!
+const CACHE_NAME = 'sound-news-v3.0'; // Altera para v3, v4... sempre que fizeres atualizações!
 
 const urlsToCache = [
   './',
