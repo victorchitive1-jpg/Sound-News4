@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound News - Download de Músicas</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #1e293b;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .capa-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        /* Botão Admin */
+        .btn-abrir-admin {
+            background-color: #334155;
+            color: #38bdf8;
+            border: 1px solid #38bdf8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        .btn-abrir-admin:hover {
+            background-color: #38bdf8;
+            color: #0f172a;
+        }
+
+        /* PAINEL DE ADMINISTRAÇÃO (MODAL) */
+        .painel-admin {
+            display: none;
+            background-color: #0f172a;
+            border: 2px solid #38bdf8;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .painel-admin.visivel {
+            display: block;
+        }
+
+        .admin-titulo {
+            color: #38bdf8;
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-sair-admin {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .form-admin input, .form-admin select {
+            width: 100%;
+            padding: 10px;
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: #f8fafc;
+            font-size: 0.85rem;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        .btn-salvar-admin {
+            width: 100%;
+            padding: 10px;
+            background-color: #22c55e;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .btn-salvar-admin:hover {
+            background-color: #16a34a;
+        }
+
+        /* LISTA DE EDIÇÃO/ELIMINAÇÃO NO ADMIN */
+        .admin-lista-musicas {
+            border-top: 1px solid #334155;
+            padding-top: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .admin-item-musica {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e293b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .admin-item-info {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 65%;
+        }
+
+        .admin-item-acoes {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-admin-acao {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .btn-admin-acao:hover {
+            background-color: #334155;
+        }
+
+        .caixa-pesquisa {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-pesquisa {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            color: #f8fafc;
+            font-size: 0.95rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .categorias-genero {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: #38bdf8 #0f172a;
+        }
+
+        .btn-genero {
+            background-color: #0f172a;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-genero.ativo {
+            background-color: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+        }
+
+        .card-musica {
+            background-color: #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge-genero {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background-color: rgba(15, 23, 42, 0.85);
+            color: #38bdf8;
+            border: 1px solid #38bdf8;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .capa {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .titulo { font-size: 1.3rem; font-weight: bold; margin-bottom: 5px; }
+        .artista { color: #94a3b8; font-size: 0.95rem; margin-bottom: 15px; }
+        audio { display: none; }
+
+        .progresso-container {
+            margin: 15px 0 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .barra-progresso {
+            width: 100%;
+            height: 6px;
+            background: #0f172a;
+            border-radius: 5px;
+            accent-color: #38bdf8;
+            cursor: pointer;
+        }
+
+        .tempo-container {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .controles-player {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-control {
+            background-color: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .btn-play {
+            width: 46px;
+            height: 46px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .btn-whatsapp { background-color: #25d366; color: white; border: none; }
+        .btn-download-icon { background-color: #22c55e; color: white; border: none; }
+        .btn-like.ativo { background-color: #ef4444; color: white; border-color: #ef4444; }
+
+        .estatisticas-musica {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            background-color: #1e293b;
+            padding: 6px 14px;
+            border-radius: 20px;
+            width: fit-content;
+            margin: 12px auto 0 auto;
+        }
+
+        .sem-resultados { text-align: center; color: #94a3b8; padding: 20px 0; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="capa-header">
+            <div class="logo">🎧 Sound News</div>
+            <div class="tagline">Lançamentos & Downloads Exclusivos</div>
+
+            <button class="btn-abrir-admin" onclick="togglePainelAdmin()">⚙️ Gestão / Painel Admin</button>
+
+            <!-- PAINEL ADMIN -->
+            <div id="painel-admin" class="painel-admin">
+                <div class="admin-titulo">
+                    <span id="admin-form-titulo">➕ Adicionar Nova Música</span>
+                    <div>
+                        <button class="btn-sair-admin" onclick="fecharSessaoAdmin()">🔒 Sair</button>
+                        <span style="cursor:pointer; margin-left: 10px;" onclick="togglePainelAdmin()">❌</span>
+                    </div>
+                </div>
+                
+                <form class="form-admin" onsubmit="salvarMusicaAdmin(event)">
+                    <input type="hidden" id="admin-id">
+                    <input type="text" id="admin-titulo" placeholder="Título da Música" required>
+                    <input type="text" id="admin-artista" placeholder="Nome do Artista" required>
+                    <select id="admin-genero" required>
+                        <option value="Pandza">Pandza</option>
+                        <option value="Marrabenta">Marrabenta</option>
+                        <option value="Amapiano">Amapiano</option>
+                        <option value="Kizomba">Kizomba</option>
+                        <option value="Hip-Hop">Hip-Hop</option>
+                        <option value="Afro House">Afro House</option>
+                        <option value="Gospel">Gospel</option>
+                    </select>
+                    <input type="text" id="admin-capa" placeholder="Caminho da Capa (ex: capa.jpg)" value="capa.jpg">
+                    <input type="text" id="admin-audio" placeholder="Nome do Ficheiro Áudio (ex: musica.mp3)" required>
+                    
+                    <button type="submit" id="btn-submit-admin" class="btn-salvar-admin">🚀 Salvar Música</button>
+                    <button type="button" id="btn-cancelar-edicao" style="display:none; width:100%; padding:8px; background:#64748b; color:white; border:none; border-radius:8px; cursor:pointer; margin-bottom:15px;" onclick="limparFormularioAdmin()">Cancelar Edição</button>
+                </form>
+
+                <div class="admin-titulo" style="font-size: 0.95rem; margin-bottom: 10px;">
+                    📋 Músicas no Catálogo (<span id="admin-total-musicas">0</span>)
+                </div>
+                <div id="admin-lista-musicas" class="admin-lista-musicas"></div>
+            </div>
+
+            <div class="caixa-pesquisa">
+                <input type="text" id="input-pesquisa" class="input-pesquisa" placeholder="🔍 Pesquisar por artista ou título..." oninput="filtrarMusicas()">
+            </div>
+
+            <div class="categorias-genero">
+                <button class="btn-genero ativo" onclick="selecionarGenero(this, 'todos')">Todos</button>
+                <button class="btn-genero" onclick="selecionarGenero(this, 'Pandza')">Pandza</button>
+                <button class="btn-genero" onclick="selecionarGenero(this, 'Marrabenta')">Marrabenta</button>
+                <button class="btn-genero" onclick="selecionarGenero(this, 'Amapiano')">Amapiano</button>
+                <button class="btn-genero" onclick="selecionarGenero(this, 'Kizomba')">Kizomba</button>
+                <button class="btn-genero" onclick="selecionarGenero(this, 'Hip-Hop')">Hip-Hop</button>
+                <button class="btn-genero" onclick="selecionarGenero(this, 'Afro House')">Afro House</button>
+                <button class="btn-genero" onclick="selecionarGenero(this, 'Gospel')">Gospel</button>
+            </div>
+        </header>
+
+        <div id="lista-musicas"></div>
+        <div id="sem-resultados" class="sem-resultados">Nenhuma música encontrada nesta categoria.</div>
+    </div>
+
+    <script>
+        const SENHA_ADMIN = "Nelcia"; 
+        let adminAutenticado = false;
+
+        let musicas = [];
+        let generoSelecionado = 'todos';
+
+        function togglePainelAdmin() {
+            const painel = document.getElementById('painel-admin');
+
+            if (painel.classList.contains('visivel')) {
+                painel.classList.remove('visivel');
+                return;
+            }
+
+            if (!adminAutenticado) {
+                const senhaDigitada = prompt("🔐 Introduza a palavra-passe do Administrador:");
+                if (senhaDigitada === SENHA_ADMIN) {
+                    adminAutenticado = true;
+                    painel.classList.add('visivel');
+                } else if (senhaDigitada !== null) {
+                    alert("❌ Palavra-passe incorreta!");
+                }
+            } else {
+                painel.classList.add('visivel');
+            }
+        }
+
+        function fecharSessaoAdmin() {
+            adminAutenticado = false;
+            document.getElementById('painel-admin').classList.remove('visivel');
+            alert("🔒 Sessão de Administrador terminada.");
+        }
+
+        async function carregarMusicas() {
+            try {
+                let dadosJson = [];
+                try {
+                    const resposta = await fetch('musicas.json');
+                    dadosJson = await resposta.json();
+                } catch (e) {
+                    console.log("Aviso: musicas.json não encontrado ou bloqueado.");
+                }
+
+                const salvasLocal = localStorage.getItem('soundnews_catalogo_completo');
+                
+                if (salvasLocal) {
+                    musicas = JSON.parse(salvasLocal);
+                } else {
+                    musicas = dadosJson;
+                    guardarCatalogoLocal();
+                }
+
+                renderizarCatalogo();
+                atualizarListaAdmin();
+            } catch (erro) {
+                console.error("Erro ao carregar catálogo:", erro);
+            }
+        }
+
+        function guardarCatalogoLocal() {
+            localStorage.setItem('soundnews_catalogo_completo', JSON.stringify(musicas));
+        }
+
+        function renderizarCatalogo() {
+            const lista = document.getElementById('lista-musicas');
+            lista.innerHTML = '';
+
+            musicas.forEach((m, index) => {
+                const downloadsAtuais = obterEstatistica(m.id, 'dl', m.downloadsIniciais || 0);
+                const likesAtuais = obterEstatistica(m.id, 'like', m.likesIniciais || 0);
+                const jaDeuLike = localStorage.getItem(`soundnews_liked_${m.id}`) === 'true';
+
+                const card = document.createElement('div');
+                card.className = 'card-musica';
+                card.id = `musica-card-${m.id}`;
+                card.setAttribute('data-genero', m.genero);
+
+                card.innerHTML = `
+                    <span class="badge-genero">${m.genero}</span>
+                    <img src="${m.capa}" alt="Capa" class="capa">
+                    <div class="titulo">${m.titulo}</div>
+                    <div class="artista">${m.artista}</div>
+
+                    <audio id="audio-${m.id}" preload="metadata">
+                        <source src="${m.audio}" type="audio/mpeg">
+                    </audio>
+
+                    <div class="progresso-container">
+                        <input type="range" class="barra-progresso" value="0" min="0" max="100" oninput="seekAudio(this, ${m.id})">
+                        <div class="tempo-container">
+                            <span class="tempo-decorrido">0:00</span>
+                            <span class="tempo-total">0:00</span>
+                        </div>
+                    </div>
+
+                    <div class="controles-player">
+                        <button class="btn-control" onclick="mudarMusica(${index}, -1)">⏮️</button>
+                        <button class="btn-control btn-play" onclick="togglePlay(this)">▶️</button>
+                        <button class="btn-control" onclick="mudarMusica(${index}, 1)">⏭️</button>
+                        <button class="btn-control btn-like ${jaDeuLike ? 'ativo' : ''}" onclick="toggleLike(this, ${m.id})">❤️</button>
+                        <button class="btn-control btn-whatsapp" onclick="partilharWhatsApp('${m.titulo}', '${m.artista}', ${m.id})">💬</button>
+                        <a href="${m.audio}" download="${m.downloadNome || m.titulo}" class="btn-control btn-download-icon" onclick="registrarDownload(${m.id})">⬇️</a>
+                    </div>
+
+                    <div class="estatisticas-musica">
+                        <span>📥 <span id="count-dl-${m.id}">${downloadsAtuais}</span> downloads</span>
+                        <span>❤️ <span id="count-like-${m.id}">${likesAtuais}</span> gostos</span>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+
+            configurarPlayers();
+        }
+
+        function atualizarListaAdmin() {
+            const container = document.getElementById('admin-lista-musicas');
+            document.getElementById('admin-total-musicas').textContent = musicas.length;
+            container.innerHTML = '';
+
+            musicas.forEach(m => {
+                const item = document.createElement('div');
+                item.className = 'admin-item-musica';
+                item.innerHTML = `
+                    <div class="admin-item-info">
+                        <strong>${m.titulo}</strong> - ${m.artista}
+                    </div>
+                    <div class="admin-item-acoes">
+                        <button class="btn-admin-acao" onclick="carregarParaEdicao(${m.id})" title="Editar">✏️</button>
+                        <button class="btn-admin-acao" onclick="eliminarMusica(${m.id})" title="Eliminar">🗑️</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function salvarMusicaAdmin(e) {
+            e.preventDefault();
+            
+            const idForm = document.getElementById('admin-id').value;
+            const titulo = document.getElementById('admin-titulo').value;
+            const artista = document.getElementById('admin-artista').value;
+            const genero = document.getElementById('admin-genero').value;
+            const capa = document.getElementById('admin-capa').value || 'capa.jpg';
+            const audio = document.getElementById('admin-audio').value;
+
+            if (idForm) {
+                const index = musicas.findIndex(m => m.id == idForm);
+                if (index !== -1) {
+                    musicas[index].titulo = titulo;
+                    musicas[index].artista = artista;
+                    musicas[index].genero = genero;
+                    musicas[index].capa = capa;
+                    musicas[index].audio = audio;
+                    musicas[index].downloadNome = `${artista} - ${titulo}.mp3`;
+                }
+            } else {
+                const nova = {
+                    id: Date.now(),
+                    titulo,
+                    artista,
+                    genero,
+                    capa,
+                    audio,
+                    downloadNome: `${artista} - ${titulo}.mp3`,
+                    downloadsIniciais: 0,
+                    likesIniciais: 0
+                };
+                musicas.push(nova);
+            }
+
+            guardarCatalogoLocal();
+            renderizarCatalogo();
+            atualizarListaAdmin();
+            limparFormularioAdmin();
+        }
+
+        function carregarParaEdicao(id) {
+            const m = musicas.find(item => item.id == id);
+            if (!m) return;
+
+            document.getElementById('admin-id').value = m.id;
+            document.getElementById('admin-titulo').value = m.titulo;
+            document.getElementById('admin-artista').value = m.artista;
+            document.getElementById('admin-genero').value = m.genero;
+            document.getElementById('admin-capa').value = m.capa;
+            document.getElementById('admin-audio').value = m.audio;
+
+            document.getElementById('admin-form-titulo').textContent = '✏️ Editar Música';
+            document.getElementById('btn-submit-admin').textContent = '🔄 Atualizar Dados';
+            document.getElementById('btn-cancelar-edicao').style.display = 'block';
+        }
+
+        function limparFormularioAdmin() {
+            document.getElementById('admin-id').value = '';
+            document.getElementById('admin-titulo').value = '';
+            document.getElementById('admin-artista').value = '';
+            document.getElementById('admin-capa').value = 'capa.jpg';
+            document.getElementById('admin-audio').value = '';
+
+            document.getElementById('admin-form-titulo').textContent = '➕ Adicionar Nova Música';
+            document.getElementById('btn-submit-admin').textContent = '🚀 Salvar Música';
+            document.getElementById('btn-cancelar-edicao').style.display = 'none';
+        }
+
+        function eliminarMusica(id) {
+            if (confirm("Tem certeza de que pretende eliminar esta música?")) {
+                musicas = musicas.filter(m => m.id != id);
+                guardarCatalogoLocal();
+                renderizarCatalogo();
+                atualizarListaAdmin();
+                limparFormularioAdmin();
+            }
+        }
+
+        // PLAYER CONTROLS
+        function togglePlay(botao) {
+            const card = botao.closest('.card-musica');
+            const player = card.querySelector('audio');
+            const todos = document.querySelectorAll('audio');
+            const btns = document.querySelectorAll('.btn-play');
+
+            if (!player.paused) {
+                player.pause();
+                botao.textContent = "▶️";
+            } else {
+                todos.forEach((p, i) => { p.pause(); btns[i].textContent = "▶️"; });
+                player.play();
+                botao.textContent = "⏸️";
+            }
+        }
+
+        function mudarMusica(indexAtual, direcao) {
+            const cartoes = Array.from(document.querySelectorAll('.card-musica')).filter(c => c.style.display !== 'none');
+            const cardAtual = document.querySelectorAll('.card-musica')[indexAtual];
+            const idxFiltrado = cartoes.indexOf(cardAtual);
+            const novoIndex = idxFiltrado + direcao;
+
+            if (novoIndex >= 0 && novoIndex < cartoes.length) {
+                cardAtual.querySelector('audio').pause();
+                cardAtual.querySelector('.btn-play').textContent = "▶️";
+
+                const novoCard = cartoes[novoIndex];
+                novoCard.querySelector('audio').play();
+                novoCard.querySelector('.btn-play').textContent = "⏸️";
+                novoCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function configurarPlayers() {
+            document.querySelectorAll('.card-musica').forEach((card, index) => {
+                const player = card.querySelector('audio');
+                const barra = card.querySelector('.barra-progresso');
+                const spanDecorrido = card.querySelector('.tempo-decorrido');
+                const spanTotal = card.querySelector('.tempo-total');
+
+                player.addEventListener('loadedmetadata', () => spanTotal.textContent = formatarTempo(player.duration));
+                player.addEventListener('timeupdate', () => {
+                    if (player.duration) {
+                        barra.value = (player.currentTime / player.duration) * 100;
+                        spanDecorrido.textContent = formatarTempo(player.currentTime);
+                    }
+                });
+
+                // REPRODUÇÃO CONTÍNUA (AUTO-NEXT)
+                player.addEventListener('ended', () => {
+                    card.querySelector('.btn-play').textContent = "▶️";
+                    mudarMusica(index, 1); // Passa para a próxima música visível
+                });
+            });
+        }
+
+        function selecionarGenero(botao, genero) {
+            document.querySelectorAll('.btn-genero').forEach(b => b.classList.remove('ativo'));
+            botao.classList.add('ativo');
+            generoSelecionado = genero;
+            filtrarMusicas();
+        }
+
+        function filtrarMusicas() {
+            const termo = document.getElementById('input-pesquisa').value.toLowerCase().trim();
+            let visiveis = 0;
+
+            document.querySelectorAll('.card-musica').forEach(card => {
+                const titulo = card.querySelector('.titulo').textContent.toLowerCase();
+                const artista = card.querySelector('.artista').textContent.toLowerCase();
+                const genero = card.getAttribute('data-genero');
+
+                if ((titulo.includes(termo) || artista.includes(termo)) && (generoSelecionado === 'todos' || genero === generoSelecionado)) {
+                    card.style.display = 'block'; visiveis++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('sem-resultados').style.display = (visiveis === 0) ? 'block' : 'none';
+        }
+
+        function formatarTempo(seg) {
+            if (isNaN(seg) || seg <= 0) return "0:00";
+            return `${Math.floor(seg / 60)}:${Math.floor(seg % 60).toString().padStart(2, '0')}`;
+        }
+
+        function seekAudio(barra, id) {
+            const p = document.getElementById(`audio-${id}`);
+            if (p.duration) p.currentTime = (barra.value / 100) * p.duration;
+        }
+
+        function partilharWhatsApp(t, a, id) {
+            const url = `${window.location.href}?track=${id}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`🎵 *${t}* - ${a}\n👉 Escutar: ${url}`)}`, '_blank');
+        }
+
+        function obterEstatistica(id, t, v) { return localStorage.getItem(`soundnews_${t}_${id}`) || v; }
+        
+        function registrarDownload(id) {
+            let el = document.getElementById(`count-dl-${id}`);
+            let c = parseInt(el.textContent) + 1;
+            el.textContent = c; 
+            localStorage.setItem(`soundnews_dl_${id}`, c);
+        }
+
+        function toggleLike(btn, id) {
+            let el = document.getElementById(`count-like-${id}`);
+            let c = parseInt(el.textContent);
+            let liked = localStorage.getItem(`soundnews_liked_${id}`) === 'true';
+            c = liked ? c - 1 : c + 1;
+            btn.classList.toggle('ativo');
+            el.textContent = c;
+            localStorage.setItem(`soundnews_liked_${id}`, !liked);
+            localStorage.setItem(`soundnews_like_${id}`, c);
+        }
+
+        // Inicializar
+        carregarMusicas();
+    </script>
+</body>
+</html>
