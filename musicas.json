@@ -1,12 +1,12 @@
 [
   {
     "id": 1,
-    "titulo": "Rua da Dira",
-    "artista": "Zé Ngola",
-    "genero": "Kizomba",
+    "titulo": "Xissovorani",
+    "artista": "Helder Boy",
+    "genero": "Marrabenta",
     "capa": "capa.jpg",
-    "audio": "Ze%20Ngola%20-%20Rua%20da%20dira.mp3",
-    "downloadNome": "Zé Ngola - Rua da dira.mp3",
+    "audio": "1.Helder Boy - Xissovorani.mp3",
+    "downloadNome": "1.Helder Boy - Xissovorani.mp3",
     "downloadsIniciais": 89,
     "likesIniciais": 18
   },
@@ -14,7 +14,7 @@
     "id": 2,
     "titulo": "Mamas Baby",
     "artista": "Nelson Tivane",
-    "genero": "Amapiano",
+    "genero": "HipHop",
     "capa": "capa.jpg",
     "audio": "Makhadzi%20feat%20%20Nelson%20Tivane%20%28mama%27s%20baby%20Kurubian%27s%20touch%29%20Kurubian%20Hits%20%28%20Amapiano%29.mp3",
     "downloadNome": "Nelson Tivane - Mamas baby.mp3",
@@ -98,28 +98,26 @@
   "downloadsIniciais": 0,
   "likesIniciais": 0
 },
+  {
+    "id": 10,
+    "titulo": "Anile noxe",
+    "artista": "Boti Israel",
+    "genero": "Marrabenta",
+    "capa": "capa.jpg",
+    "audio": "Boti Israel-Aneli Nexe.mp3",
+    "downloadNome": "Novo Artista - Boti Israel-Aneli Nexe.mp3",
+    "downloadsIniciais": 0,
+    "likesIniciais": 0
+  },
 {
-  "id": 10,
-  "titulo": "Ivolovolo",
-  "artista": "Big Zulu",
-  "genero": "HipHop",
+  "id": 11,
+  "titulo": "Xissovorani",
+  "artista": "1.Helder Boy",
+  "genero": "Marrabenta",
   "capa": "capa.jpg",
-  "audio": "Big-Zulu-ft-Xola-Ivolovolo.mp3",
-  "downloadNome": "Big-Zulu-ft-Xola-Ivolovolo.mp3",
+  "audio": "1.Helder Boy - Xissovorani.mp3",
+  "downloadNome": "1.Helder Boy - Xissovorani.mp3",
   "downloadsIniciais": 0,
   "likesIniciais": 0
-},
-]
-[
-    {
-        "id": 11,
-        "titulo": "Ivolovolo",
-        "artista": "Big-Zulu-ft-Xola",
-        "genero": "Amapiano",
-        "capa": "capa.jpg",
-        "audio": "Big-Zulu-ft-Xola-Ivolovolo.mp3",
-        "downloadNome": "Big-Zulu-ft-Xola-Ivolovolo.mp3",
-        "downloadsIniciais": 0,
-        "likesIniciais": 0
-    }
+}
 ]
